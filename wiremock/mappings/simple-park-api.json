@@ -1,0 +1,96 @@
+{
+  "mappings": [
+    {
+      "name": "Start Parking - Success",
+      "request": {
+        "method": "POST",
+        "urlPath": "/api/v1/parking/start",
+        "headers": {
+          "X-API-Key": {
+            "equalTo": "test-api-key-12345"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "parkingId": "sp-{{randomValue type='UUID'}}",
+          "status": "ACTIVE"
+        },
+        "transformers": ["response-template"]
+      }
+    },
+    {
+      "name": "Extend Parking - Success",
+      "request": {
+        "method": "POST",
+        "urlPathPattern": "/api/v1/parking/([^/]+)/extend",
+        "headers": {
+          "X-API-Key": {
+            "equalTo": "test-api-key-12345"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "parkingId": "{{request.path.[2]}}",
+          "status": "ACTIVE"
+        },
+        "transformers": ["response-template"]
+      }
+    },
+    {
+      "name": "Stop Parking - Success",
+      "request": {
+        "method": "POST",
+        "urlPathPattern": "/api/v1/parking/([^/]+)/stop",
+        "headers": {
+          "X-API-Key": {
+            "equalTo": "test-api-key-12345"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "parkingId": "{{request.path.[2]}}",
+          "status": "STOPPED"
+        },
+        "transformers": ["response-template"]
+      }
+    },
+    {
+      "name": "Start Parking - Invalid API Key",
+      "priority": 1,
+      "request": {
+        "method": "POST",
+        "urlPath": "/api/v1/parking/start",
+        "headers": {
+          "X-API-Key": {
+            "absent": true
+          }
+        }
+      },
+      "response": {
+        "status": 401,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "error": "Unauthorized",
+          "message": "Missing or invalid API key"
+        }
+      }
+    }
+  ]
+}
