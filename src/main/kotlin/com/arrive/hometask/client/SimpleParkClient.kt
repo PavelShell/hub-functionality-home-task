@@ -37,7 +37,7 @@ class SimpleParkClient(
         licensePlate: String,
         areaCode: String,
         startTime: Instant,
-        endTime: Instant
+        endTime: Instant?
     ): SimpleParkClientResponse = postHandlingException(
         "/parking/start",
         mapOf(

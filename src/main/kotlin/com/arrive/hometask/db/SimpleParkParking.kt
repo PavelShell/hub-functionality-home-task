@@ -1,14 +1,16 @@
 package com.arrive.hometask.db
 
+import com.arrive.hometask.client.SimpleParkParkingStatus
 import jakarta.persistence.*
 import java.time.Instant
 
 @Entity
 data class SimpleParkParking(
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    var id: Long,
+    var id: Long? = null,
 
     @Column(name = "area_code", nullable = false, length = 32)
     var areaCode: String,
@@ -17,7 +19,8 @@ data class SimpleParkParking(
     var licensePlate: String,
 
     @Column(name = "status", nullable = false, length = 8)
-    var status: String,
+    @Enumerated(EnumType.STRING)
+    var status: SimpleParkParkingStatus,
 
     @Column(name = "start_time", nullable = false)
     var startTime: Instant,
