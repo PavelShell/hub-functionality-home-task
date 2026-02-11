@@ -1,7 +1,14 @@
 package com.arrive.hometask.listener
 
-enum class ParkingEvent {
-    PARKING_STARTED,
-    PARKING_EXTENDED,
-    PARKING_STOPPED
-}
+import java.time.Instant
+
+data class ParkingEvent(
+    val eventType: ParkingEventType,
+    val parkingId: String,
+    val licensePlate: String? = null,
+    val areaCode: String? = null,
+    val startTime: Instant? = null,
+    val endTime: Instant? = null,
+    val priceAmount: Double? = null,
+    val currency: String? = null
+)

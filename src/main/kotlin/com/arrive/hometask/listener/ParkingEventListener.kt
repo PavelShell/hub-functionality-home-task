@@ -22,8 +22,8 @@ class ParkingEventListener {
     private val logger = LoggerFactory.getLogger(ParkingEventListener::class.java)
 
     // Transactions?
-    @KafkaListener(topics = ["parking.events"], errorHandler = "parkingEventsErrorHandler")
-    fun processMessage(content: String?, ack: Acknowledgment) {
+    @KafkaListener(topics = ["parking.events"], errorHandler = "listenerErrorHandler")
+    fun processMessage(content: ParkingEvent, ack: Acknowledgment) {
         TODO()
         ack.acknowledge()
     }
