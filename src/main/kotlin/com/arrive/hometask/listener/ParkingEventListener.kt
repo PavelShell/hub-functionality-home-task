@@ -1,6 +1,8 @@
 package com.arrive.hometask.listener
 
 import org.slf4j.LoggerFactory
+import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component
 
 /**
@@ -19,5 +21,10 @@ class ParkingEventListener {
 
     private val logger = LoggerFactory.getLogger(ParkingEventListener::class.java)
 
-    // TODO: Implement Kafka listener
+    // Transactions?
+    @KafkaListener(topics = ["parking.events"], errorHandler = "parkingEventsErrorHandler")
+    fun processMessage(content: String?, ack: Acknowledgment) {
+        TODO()
+        ack.acknowledge()
+    }
 }

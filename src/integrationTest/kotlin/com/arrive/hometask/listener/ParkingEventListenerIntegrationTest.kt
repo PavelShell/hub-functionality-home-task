@@ -48,4 +48,11 @@ class ParkingEventListenerIntegrationTest : IntegrationTestConfig() {
         // 3. PostgreSQL container is accessible
         // 4. Messages can be sent to Kafka
     }
+//
+//    @Test
+//    fun `should handle error gracefully`() {
+//        val result = testKafkaTemplate.send("parking.events", "testKey", "foobar")
+//            .get(10, TimeUnit.SECONDS)
+//        println(result)
+//    }
 }
