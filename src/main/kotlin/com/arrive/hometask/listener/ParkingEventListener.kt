@@ -1,5 +1,6 @@
 package com.arrive.hometask.listener
 
+import com.arrive.hometask.client.SimpleParkClient
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
@@ -17,13 +18,21 @@ import org.springframework.stereotype.Component
  * Hint: Use @KafkaListener annotation with proper configuration
  */
 @Component
-class ParkingEventListener {
+class ParkingEventListener(
+    private val parkClient: SimpleParkClient
+) {
 
     private val logger = LoggerFactory.getLogger(ParkingEventListener::class.java)
 
     // Transactions?
     @KafkaListener(topics = ["parking.events"], errorHandler = "listenerErrorHandler")
-    fun processMessage(content: ParkingEvent, ack: Acknowledgment) {
+    fun processMessage(event: ParkingEvent, ack: Acknowledgment) {
+        logger.info("Received event: $event")
+        if(event.eventType == ParkingEventType.PARKING_STARTED) {
+            parkClient.startParking(
+
+            )
+        }
         TODO()
         ack.acknowledge()
     }

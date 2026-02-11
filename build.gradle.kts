@@ -22,7 +22,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.kafka:spring-kafka")
-    
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
     // Database
     implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
@@ -31,13 +32,13 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
-    
+
     // Optional for senior requirements
     implementation("org.springframework.retry:spring-retry")
     implementation("org.springframework:spring-aspects")
     implementation("io.github.resilience4j:resilience4j-spring-boot3:2.1.0")
     implementation("io.micrometer:micrometer-core")
-    
+
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
@@ -83,7 +84,7 @@ tasks.register<Test>("integrationTest") {
     testClassesDirs = sourceSets["integrationTest"].output.classesDirs
     classpath = sourceSets["integrationTest"].runtimeClasspath
     shouldRunAfter("test")
-    
+
     useJUnitPlatform()
 }
 
