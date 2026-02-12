@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface SimpleParkParkingJpaRepository : JpaRepository<SimpleParkParking, Long> {
 
-    fun existsByInternalParkingId(internalParkingId: String): Boolean
+    fun findOneByInternalParkingId(internalParkingId: String): SimpleParkParking?
 }
