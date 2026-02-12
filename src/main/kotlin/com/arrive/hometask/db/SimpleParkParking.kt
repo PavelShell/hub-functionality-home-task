@@ -2,12 +2,16 @@ package com.arrive.hometask.db
 
 import com.arrive.hometask.client.model.SimpleParkParkingStatus
 import jakarta.persistence.*
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.Instant
 
 /**
  * Entity representing a parking session in the local database.
  */
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 class SimpleParkParking(
 
     /**
@@ -52,12 +56,14 @@ class SimpleParkParking(
     /**
      * Timestamp of the last update.
      */
+    @LastModifiedDate
     @Column(name = "updated_at")
     var updatedAt: Instant? = null,
 
     /**
      * Timestamp of when the record was created.
      */
+    @CreatedDate
     @Column(name = "created_at", updatable = false)
     var createdAt: Instant? = null,
 

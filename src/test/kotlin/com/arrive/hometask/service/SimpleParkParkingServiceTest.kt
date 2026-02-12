@@ -39,7 +39,10 @@ class SimpleParkParkingServiceTest : DbAwareTestConfig() {
 
         service.save(parkingEvent)
 
-        assertNotNull(parkParkingJpaRepository.findOneByInternalParkingId(parkingEvent.internalParkingId))
+        val createdParking = parkParkingJpaRepository.findOneByInternalParkingId(parkingEvent.internalParkingId)
+        assertNotNull(createdParking)
+        assertNotNull(createdParking?.createdAt)
+        assertNotNull(createdParking?.updatedAt)
     }
 
     @Test
