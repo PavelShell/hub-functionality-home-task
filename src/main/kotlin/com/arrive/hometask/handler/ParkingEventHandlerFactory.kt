@@ -1,6 +1,6 @@
 package com.arrive.hometask.handler
 
-import com.arrive.hometask.listener.ParkingEventType
+import com.arrive.hometask.listener.model.ParkingEventType
 import org.springframework.stereotype.Component
 
 @Component

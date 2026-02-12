@@ -1,6 +1,7 @@
 package com.arrive.hometask.listener
 
 import com.arrive.hometask.handler.ParkingEventHandlerFactory
+import com.arrive.hometask.listener.model.ParkingEvent
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment

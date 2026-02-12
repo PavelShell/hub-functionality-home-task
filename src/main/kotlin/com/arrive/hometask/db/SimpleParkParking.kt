@@ -1,6 +1,6 @@
 package com.arrive.hometask.db
 
-import com.arrive.hometask.client.SimpleParkParkingStatus
+import com.arrive.hometask.client.model.SimpleParkParkingStatus
 import jakarta.persistence.*
 import java.time.Instant
 

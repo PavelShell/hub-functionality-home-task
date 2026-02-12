@@ -2,6 +2,7 @@ package com.arrive.hometask.listener
 
 import com.arrive.hometask.config.IntegrationTestConfig
 import com.arrive.hometask.config.KafkaProducerTestConfig
+import com.arrive.hometask.listener.model.ParkingEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

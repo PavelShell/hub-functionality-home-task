@@ -1,6 +1,6 @@
 package com.arrive.hometask.handler
 
-import com.arrive.hometask.listener.ParkingEventType
+import com.arrive.hometask.listener.model.ParkingEventType
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk

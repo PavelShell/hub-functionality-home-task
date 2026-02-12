@@ -2,6 +2,7 @@ package com.arrive.hometask.client
 
 import com.arrive.hometask.client.exception.SimpleParkClientException
 import com.arrive.hometask.client.exception.SimpleParkServerException
+import com.arrive.hometask.client.model.SimpleParkClientResponse
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException

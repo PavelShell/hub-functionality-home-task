@@ -1,11 +1,11 @@
 package com.arrive.hometask.handler.impl
 
 import com.arrive.hometask.client.SimpleParkClient
-import com.arrive.hometask.client.SimpleParkParkingStatus
+import com.arrive.hometask.client.model.SimpleParkParkingStatus
 import com.arrive.hometask.db.SimpleParkParking
 import com.arrive.hometask.handler.TypedParkingEventHandler
-import com.arrive.hometask.listener.ParkingEvent
-import com.arrive.hometask.listener.ParkingEventType
+import com.arrive.hometask.listener.model.ParkingEvent
+import com.arrive.hometask.listener.model.ParkingEventType
 import com.arrive.hometask.service.SimpleParkParkingService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component

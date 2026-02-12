@@ -3,6 +3,8 @@ package com.arrive.hometask.listener
 import com.arrive.hometask.config.DbAwareTestConfig
 import com.arrive.hometask.handler.ParkingEventHandler
 import com.arrive.hometask.handler.ParkingEventHandlerFactory
+import com.arrive.hometask.listener.model.ParkingEvent
+import com.arrive.hometask.listener.model.ParkingEventType
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.*

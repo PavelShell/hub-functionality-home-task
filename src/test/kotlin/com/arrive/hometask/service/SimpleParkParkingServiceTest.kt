@@ -1,6 +1,6 @@
 package com.arrive.hometask.service
 
-import com.arrive.hometask.client.SimpleParkParkingStatus
+import com.arrive.hometask.client.model.SimpleParkParkingStatus
 import com.arrive.hometask.config.DbAwareTestConfig
 import com.arrive.hometask.db.SimpleParkParking
 import com.arrive.hometask.db.SimpleParkParkingJpaRepository

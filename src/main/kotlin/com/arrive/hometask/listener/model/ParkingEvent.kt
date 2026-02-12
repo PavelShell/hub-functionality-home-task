@@ -1,4 +1,4 @@
-package com.arrive.hometask.listener
+package com.arrive.hometask.listener.model
 
 import java.time.Instant
 

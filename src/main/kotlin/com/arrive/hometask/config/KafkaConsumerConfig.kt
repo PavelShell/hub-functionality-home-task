@@ -1,6 +1,6 @@
 package com.arrive.hometask.config
 
-import com.arrive.hometask.listener.ParkingEvent
+import com.arrive.hometask.listener.model.ParkingEvent
 import com.arrive.hometask.listener.ParkingEventListener
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
