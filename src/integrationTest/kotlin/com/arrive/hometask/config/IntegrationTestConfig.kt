@@ -71,7 +71,7 @@ class KafkaProducerTestConfig {
             org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG
                 to org.apache.kafka.common.serialization.StringSerializer::class.java,
             org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG
-                to org.springframework.kafka.support.serializer.JsonSerializer::class.java
+                to org.apache.kafka.common.serialization.StringSerializer::class.java
         )
         return DefaultKafkaProducerFactory(configProps)
     }
