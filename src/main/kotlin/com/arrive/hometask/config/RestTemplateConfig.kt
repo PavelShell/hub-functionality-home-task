@@ -20,6 +20,7 @@ class RestTemplateConfig {
         .rootUri(baseUrl)
         .defaultHeader("X-API-Key", apiKey)
         .setReadTimeout(Duration.ofSeconds(timeoutSeconds))
+        .setConnectTimeout(Duration.ofSeconds(timeoutSeconds))
         .build()
 
 }
