@@ -141,7 +141,7 @@ class StartParkingEventHandlerTest {
             )
         } returns clientResponse
         every { simpleParkParkingService.save(any()) } throws RuntimeException("DB Error")
-        // we need to return something for stopParking call
+        // we need to return something to stopParking call
         every { parkClient.stopParking(any(), any()) } returns SimpleParkClientResponse(
             "EXTERNAL_ID",
             SimpleParkParkingStatus.STOPPED

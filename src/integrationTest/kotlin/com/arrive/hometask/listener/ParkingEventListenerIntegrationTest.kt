@@ -8,6 +8,7 @@ import com.arrive.hometask.listener.model.ParkingEvent
 import com.arrive.hometask.listener.model.ParkingEventType
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -32,8 +33,8 @@ class ParkingEventListenerIntegrationTest : IntegrationTestConfig() {
     companion object {
 
         @RegisterExtension
-        val wireMock = WireMockExtension.newInstance()
-            .options(com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig().dynamicPort())
+        val wireMock: WireMockExtension = WireMockExtension.newInstance()
+            .options(wireMockConfig().dynamicPort())
             .build()
 
         @JvmStatic

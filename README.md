@@ -51,7 +51,6 @@
 
 ### Known limitations or trade-offs
 
-* **Parallel processing**: Events are currently processed sequentially
 * **Retry mechanism**: The current implementation is basic and can be further refined for production use.
 * **Event ordering**: Handling of out-of-order event consumption is not yet implemented.
 * **API Integration**: As documentation for the Simple Park API was unavailable, integration logic is based on inferred
