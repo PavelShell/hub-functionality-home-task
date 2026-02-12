@@ -9,7 +9,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
 
 /**
- * Base Test Configuration for Unit Tests
+ * Test Configuration for Unit Tests
  *
  * Provides PostgreSQL Testcontainer for database testing.
  * Use @EmbeddedKafka annotation on test classes for Kafka broker.
@@ -18,7 +18,7 @@ import org.testcontainers.utility.DockerImageName
  * ensuring tests run against the same database as production.
  */
 @Testcontainers
-abstract class BaseTestConfig {
+abstract class DbAwareTestConfig {
 
     companion object {
         @Container

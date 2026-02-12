@@ -17,7 +17,7 @@ class ExtendParkingEventHandler(
 
     override fun invoke(event: ParkingEvent) {
         val existingParking =
-            requireNotNull(simpleParkParkingService.findByExternalId(event.parkingId)) { "Parking with ID ${event.parkingId} does not exist" }
+            requireNotNull(simpleParkParkingService.findByInternalParkingId(event.parkingId)) { "Parking with ID ${event.parkingId} does not exist" }
         if (existingParking.status != SimpleParkParkingStatus.ACTIVE) {
             throw IllegalStateException("Parking with ID ${event.parkingId} is not active. Actual status: ${existingParking.status}")
         }
@@ -31,7 +31,10 @@ class ExtendParkingEventHandler(
         val (_, status) = parkClient.extendParking(externalParkingId, newEndTime)
 
         when (status) {
-            SimpleParkParkingStatus.ACTIVE -> simpleParkParkingService.save(existingParking.copy(endTime = newEndTime))
+            SimpleParkParkingStatus.ACTIVE -> {
+                existingParking.endTime = newEndTime
+                simpleParkParkingService.save(existingParking)
+            }
             // todo: should we set existing parking status to FAILED?
             else -> throw IllegalStateException("Parking with ID ${event.parkingId} and external ID $externalParkingId failed to extend. Actual status: $status")
         }

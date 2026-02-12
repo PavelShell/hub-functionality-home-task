@@ -12,7 +12,7 @@ class ParkingEventHandlerFactory(
 
     init {
         // fail fast
-//        ParkingEventType.entries.forEach { requireNotNull(handlers[it]) { "No handler for event type $it" } }
+        ParkingEventType.entries.forEach { requireNotNull(handlers[it]) { "No handler for event type $it" } }
     }
 
     fun getHandler(eventType: ParkingEventType): ParkingEventHandler = handlers[eventType]

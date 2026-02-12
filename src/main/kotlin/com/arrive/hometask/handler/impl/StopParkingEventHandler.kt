@@ -20,7 +20,7 @@ class StopParkingEventHandler(
 
     override fun invoke(event: ParkingEvent) {
         val existingParking =
-            requireNotNull(simpleParkParkingService.findByExternalId(event.parkingId)) { "Parking with ID ${event.parkingId} does not exist" }
+            requireNotNull(simpleParkParkingService.findByInternalParkingId(event.parkingId)) { "Parking with ID ${event.parkingId} does not exist" }
         if (existingParking.status != SimpleParkParkingStatus.ACTIVE) {
             logger.warn("Parking with ID ${event.parkingId} is not active. Skipping event.")
             return
@@ -34,18 +34,17 @@ class StopParkingEventHandler(
 
         val stopParkingResult = runCatching { parkClient.stopParking(externalParkingId, endTime).status }
         if (stopParkingResult.isFailure || stopParkingResult.getOrNull() == SimpleParkParkingStatus.FAILED) {
-            simpleParkParkingService.save(
-                existingParking.copy(
-                    endTime = endTime,
-                    status = SimpleParkParkingStatus.FAILED
-                )
-            )
+            existingParking.endTime = endTime
+            existingParking.status = SimpleParkParkingStatus.FAILED
+            simpleParkParkingService.save(existingParking)
             throw IllegalStateException(
                 "Parking with ID ${event.parkingId} and external ID $externalParkingId failed to stop",
                 stopParkingResult.exceptionOrNull()
             )
         }
 
-        simpleParkParkingService.save(existingParking.copy(endTime = endTime, status = SimpleParkParkingStatus.STOPPED))
+        existingParking.endTime = endTime
+        existingParking.status = SimpleParkParkingStatus.STOPPED
+        simpleParkParkingService.save(existingParking)
     }
 }

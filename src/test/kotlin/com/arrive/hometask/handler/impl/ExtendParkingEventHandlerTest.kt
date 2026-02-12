@@ -7,23 +7,24 @@ import com.arrive.hometask.db.SimpleParkParking
 import com.arrive.hometask.listener.ParkingEvent
 import com.arrive.hometask.listener.ParkingEventType
 import com.arrive.hometask.service.SimpleParkParkingService
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
+import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mock
-import org.mockito.Mockito.*
-import org.mockito.junit.jupiter.MockitoExtension
 import java.time.Instant
 
-@ExtendWith(MockitoExtension::class)
+@ExtendWith(MockKExtension::class)
 class ExtendParkingEventHandlerTest {
 
-    @Mock
+    @MockK
     private lateinit var parkClient: SimpleParkClient
 
-    @Mock
+    @MockK
     private lateinit var simpleParkParkingService: SimpleParkParkingService
 
     private lateinit var handler: ExtendParkingEventHandler
@@ -48,29 +49,29 @@ class ExtendParkingEventHandlerTest {
         val existingParking = createParking(parkingId, externalId, initialEndTime)
         val clientResponse = SimpleParkClientResponse(externalId, SimpleParkParkingStatus.ACTIVE)
 
-        `when`(simpleParkParkingService.findByExternalId(parkingId)).thenReturn(existingParking)
-        `when`(parkClient.extendParking(externalId, newEndTime)).thenReturn(clientResponse)
+        every { simpleParkParkingService.findByInternalParkingId(parkingId) } returns existingParking
+        every { parkClient.extendParking(externalId, newEndTime) } returns clientResponse
+        every { simpleParkParkingService.save(any()) } returns existingParking
 
         // when
         handler.invoke(event)
 
         // then
-        verify(simpleParkParkingService).save(
-            existingParking.copy(endTime = newEndTime)
-        )
+        assertEquals(newEndTime, existingParking.endTime)
+        verify { simpleParkParkingService.save(existingParking) }
     }
 
     @Test
     fun `should throw exception when parking does not exist`() {
         // given
         val event = createEvent()
-        `when`(simpleParkParkingService.findByExternalId(event.parkingId)).thenReturn(null)
+        every { simpleParkParkingService.findByInternalParkingId(event.parkingId) } returns null
 
         // when & then
         assertThrows<IllegalArgumentException> {
             handler.invoke(event)
         }
-        verify(parkClient, never()).extendParking(anyString(), anyInstance(Instant::class.java))
+        verify(exactly = 0) { parkClient.extendParking(any(), any()) }
     }
 
     @Test
@@ -78,13 +79,13 @@ class ExtendParkingEventHandlerTest {
         // given
         val event = createEvent()
         val existingParking = createParking(event.parkingId).apply { status = SimpleParkParkingStatus.STOPPED }
-        `when`(simpleParkParkingService.findByExternalId(event.parkingId)).thenReturn(existingParking)
+        every { simpleParkParkingService.findByInternalParkingId(event.parkingId) } returns existingParking
 
         // when & then
         assertThrows<IllegalStateException> {
             handler.invoke(event)
         }
-        verify(parkClient, never()).extendParking(anyString(), anyInstance(Instant::class.java))
+        verify(exactly = 0) { parkClient.extendParking(any(), any()) }
     }
 
     @Test
@@ -95,13 +96,13 @@ class ExtendParkingEventHandlerTest {
         val event = createEvent(endTime = newEndTime)
         val existingParking = createParking(event.parkingId, endTime = initialEndTime)
 
-        `when`(simpleParkParkingService.findByExternalId(event.parkingId)).thenReturn(existingParking)
+        every { simpleParkParkingService.findByInternalParkingId(event.parkingId) } returns existingParking
 
         // when & then
         assertThrows<IllegalArgumentException> {
             handler.invoke(event)
         }
-        verify(parkClient, never()).extendParking(anyString(), anyInstance(Instant::class.java))
+        verify(exactly = 0) { parkClient.extendParking(any(), any()) }
     }
 
     @Test
@@ -111,14 +112,14 @@ class ExtendParkingEventHandlerTest {
         val existingParking = createParking(event.parkingId)
         val clientResponse = SimpleParkClientResponse("ext-id", SimpleParkParkingStatus.FAILED)
 
-        `when`(simpleParkParkingService.findByExternalId(event.parkingId)).thenReturn(existingParking)
-        `when`(parkClient.extendParking(anyString(), anyInstance(Instant::class.java))).thenReturn(clientResponse)
+        every { simpleParkParkingService.findByInternalParkingId(event.parkingId) } returns existingParking
+        every { parkClient.extendParking(any(), any()) } returns clientResponse
 
         // when & then
         assertThrows<IllegalStateException> {
             handler.invoke(event)
         }
-        verify(simpleParkParkingService, never()).save(anyInstance(SimpleParkParking::class.java))
+        verify(exactly = 0) { simpleParkParkingService.save(any()) }
     }
 
     private fun createEvent(
@@ -143,6 +144,4 @@ class ExtendParkingEventHandlerTest {
         endTime = endTime,
         status = SimpleParkParkingStatus.ACTIVE
     )
-
-    private fun <T> anyInstance(type: Class<T>): T = any(type)
 }

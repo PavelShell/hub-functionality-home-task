@@ -13,5 +13,5 @@ class SimpleParkParkingService(
     @Transactional
     fun save(parking: SimpleParkParking) = parkParkingJpaRepository.save(parking)
 
-    fun findByExternalId(externalId: String) = parkParkingJpaRepository.findOneByInternalParkingId(externalId)
+    fun findByInternalParkingId(id: String) = parkParkingJpaRepository.findOneByInternalParkingId(id)
 }

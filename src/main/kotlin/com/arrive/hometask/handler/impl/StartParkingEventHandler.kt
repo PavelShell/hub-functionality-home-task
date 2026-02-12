@@ -21,7 +21,7 @@ class StartParkingEventHandler(
     private val logger = LoggerFactory.getLogger(StartParkingEventHandler::class.java)
 
     override fun invoke(event: ParkingEvent) {
-        val existingParking = simpleParkParkingService.findByExternalId(event.parkingId)
+        val existingParking = simpleParkParkingService.findByInternalParkingId(event.parkingId)
         if (existingParking != null) {
             logger.warn("Parking with ID ${event.parkingId} already exists. Skipping event.")
             return
