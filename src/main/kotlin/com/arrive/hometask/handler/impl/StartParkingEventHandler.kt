@@ -11,6 +11,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Instant
 
+/**
+ * Handler for [ParkingEventType.PARKING_STARTED] events.
+ * Registers a new parking session in the external system and saves it to the local database.
+ * Implements a compensation pattern: if local save fails, it attempts to stop the parking in the external system.
+ */
 @Component
 class StartParkingEventHandler(
     override val eventType: ParkingEventType = ParkingEventType.PARKING_STARTED,
@@ -20,6 +25,14 @@ class StartParkingEventHandler(
 
     private val logger = LoggerFactory.getLogger(StartParkingEventHandler::class.java)
 
+    /**
+     * Handles the start parking event.
+     * Skips processing if a parking with the same internal ID already exists (idempotency).
+     *
+     * @param event The parking started event.
+     * @throws IllegalArgumentException if required fields are missing in the event.
+     * @throws IllegalStateException if the external system returns a non-ACTIVE status.
+     */
     override fun invoke(event: ParkingEvent) {
         val existingParking = simpleParkParkingService.findByInternalParkingId(event.parkingId)
         if (existingParking != null) {

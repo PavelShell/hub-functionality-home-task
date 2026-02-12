@@ -38,6 +38,9 @@ class KafkaConsumerConfig {
     @Value("\${spring.kafka.consumer.group-id}")
     private lateinit var groupId: String
 
+    /**
+     * Creates a [ConsumerFactory] with JSON deserialization for [ParkingEvent].
+     */
     @Primary
     @Bean
     fun consumerFactory(): ConsumerFactory<String, ParkingEvent> {
@@ -61,6 +64,9 @@ class KafkaConsumerConfig {
         return DefaultKafkaConsumerFactory(configProps)
     }
 
+    /**
+     * Configures a custom error handler for Kafka listeners.
+     */
     @Bean
     fun listenerErrorHandler(): KafkaListenerErrorHandler {
         val logger = LoggerFactory.getLogger(ParkingEventListener::class.java)
@@ -71,6 +77,9 @@ class KafkaConsumerConfig {
         }
     }
 
+    /**
+     * Configures the Kafka listener container factory with manual acknowledgment and error handling.
+     */
     @Primary
     @Bean
     fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, ParkingEvent> {

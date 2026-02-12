@@ -7,6 +7,9 @@ import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component
 
+/**
+ * Kafka listener that consumes and processes parking events.
+ */
 @Component
 class ParkingEventListener(
     private val handlersFactory: ParkingEventHandlerFactory
@@ -14,6 +17,12 @@ class ParkingEventListener(
 
     private val logger = LoggerFactory.getLogger(ParkingEventListener::class.java)
 
+    /**
+     * Processes a parking event message from the "parking.events" topic.
+     *
+     * @param event The deserialized parking event.
+     * @param ack The manual acknowledgment handle.
+     */
     @KafkaListener(topics = ["parking.events"], errorHandler = "listenerErrorHandler")
     fun processMessage(event: ParkingEvent, ack: Acknowledgment) {
         logger.info("Received parking event: $event")

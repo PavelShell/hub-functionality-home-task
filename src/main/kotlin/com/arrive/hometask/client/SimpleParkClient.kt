@@ -12,20 +12,8 @@ import org.springframework.web.client.RestTemplate
 import java.time.Instant
 
 /**
- * TODO: Implement REST client for SimplePark API
- *
- * Requirements:
- * - Call SimplePark API endpoints (start, extend, stop)
- * - Add X-API-Key header to all requests
- * - Configure timeout (5 seconds from properties)
- * - Handle errors appropriately (distinguish 4xx vs 5xx)
- *
- * Endpoints:
- * - POST /parking/start
- * - POST /parking/{parkingId}/extend
- * - POST /parking/{parkingId}/stop
- *
- * Hint: Use RestTemplate or WebClient
+ * Client for interacting with the SimplePark external API.
+ * Provides methods to start, extend, and stop parking sessions.
  */
 @Component
 class SimpleParkClient(
@@ -34,6 +22,17 @@ class SimpleParkClient(
 
     private val logger = LoggerFactory.getLogger(SimpleParkClient::class.java)
 
+    /**
+     * Sends a request to start a parking session.
+     *
+     * @param licensePlate Vehicle license plate.
+     * @param areaCode Code of the parking area.
+     * @param startTime Intended start time of the parking.
+     * @param endTime Optional intended end time of the parking.
+     * @return [SimpleParkClientResponse] containing the external parking ID and status.
+     * @throws SimpleParkClientException if the client returns a 4xx error.
+     * @throws SimpleParkServerException if the client returns a 5xx error or is unreachable.
+     */
     fun startParking(
         licensePlate: String,
         areaCode: String,
@@ -49,11 +48,29 @@ class SimpleParkClient(
         )
     )
 
+    /**
+     * Sends a request to extend an existing parking session.
+     *
+     * @param parkingId The external parking ID.
+     * @param newEndTime The new intended end time.
+     * @return [SimpleParkClientResponse] with updated status.
+     * @throws SimpleParkClientException if the client returns a 4xx error.
+     * @throws SimpleParkServerException if the client returns a 5xx error or is unreachable.
+     */
     fun extendParking(parkingId: String, newEndTime: Instant): SimpleParkClientResponse = postHandlingException(
         "/parking/$parkingId/extend",
         mapOf("newEndTime" to newEndTime)
     )
 
+    /**
+     * Sends a request to stop a parking session.
+     *
+     * @param parkingId The external parking ID.
+     * @param actualEndTime The actual time when the parking stopped.
+     * @return [SimpleParkClientResponse] with final status.
+     * @throws SimpleParkClientException if the client returns a 4xx error.
+     * @throws SimpleParkServerException if the client returns a 5xx error or is unreachable.
+     */
     fun stopParking(parkingId: String, actualEndTime: Instant): SimpleParkClientResponse = postHandlingException(
         "/parking/$parkingId/stop",
         mapOf("actualEndTime" to actualEndTime)

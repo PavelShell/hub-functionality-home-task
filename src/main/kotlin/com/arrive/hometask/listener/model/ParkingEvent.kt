@@ -2,6 +2,9 @@ package com.arrive.hometask.listener.model
 
 import java.time.Instant
 
+/**
+ * Represents a parking event received from an external source (e.g., Kafka).
+ */
 data class ParkingEvent(
     val eventType: ParkingEventType,
     val parkingId: String,

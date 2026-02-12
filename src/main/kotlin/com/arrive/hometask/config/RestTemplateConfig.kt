@@ -8,9 +8,20 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestTemplate
 import java.time.Duration
 
+/**
+ * Configuration class for [RestTemplate] used to communicate with the SimplePark API.
+ */
 @Configuration
 class RestTemplateConfig {
 
+    /**
+     * Creates and configures a [RestTemplate] bean with base URL, API key, and timeouts.
+     *
+     * @param baseUrl Base URL of the SimplePark API.
+     * @param apiKey API key for authentication.
+     * @param timeoutSeconds Connect and read timeout in seconds.
+     * @return Configured [RestTemplate] instance.
+     */
     @Bean
     fun simpleParkRestTemplate(
         @Value("\${simple-park.api.base-url}") baseUrl: String,

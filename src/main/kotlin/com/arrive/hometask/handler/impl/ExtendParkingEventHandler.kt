@@ -9,6 +9,10 @@ import com.arrive.hometask.service.SimpleParkParkingService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
+/**
+ * Handler for [ParkingEventType.PARKING_EXTENDED] events.
+ * Updates the end time of an existing active parking session in both the external system and local database.
+ */
 @Component
 class ExtendParkingEventHandler(
     override val eventType: ParkingEventType = ParkingEventType.PARKING_EXTENDED,
@@ -18,6 +22,14 @@ class ExtendParkingEventHandler(
 
     private val logger = LoggerFactory.getLogger(ExtendParkingEventHandler::class.java)
 
+    /**
+     * Handles the extend parking event.
+     * Skips processing if the new end time matches the current end time (idempotency).
+     *
+     * @param event The parking extended event.
+     * @throws IllegalArgumentException if the parking session is not found, or the new end time is invalid.
+     * @throws IllegalStateException if the parking session is not in ACTIVE status.
+     */
     override fun invoke(event: ParkingEvent) {
         val existingParking =
             requireNotNull(simpleParkParkingService.findByInternalParkingId(event.parkingId)) { "Parking with ID ${event.parkingId} does not exist" }

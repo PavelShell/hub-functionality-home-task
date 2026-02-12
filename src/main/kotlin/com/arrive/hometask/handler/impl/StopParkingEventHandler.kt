@@ -9,6 +9,11 @@ import com.arrive.hometask.service.SimpleParkParkingService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
+/**
+ * Handler for [ParkingEventType.PARKING_STOPPED] events.
+ * Terminates an existing active parking session in both the external system and local database.
+ * If the external system fails, the local record is marked as FAILED.
+ */
 @Component
 class StopParkingEventHandler(
     override val eventType: ParkingEventType = ParkingEventType.PARKING_STOPPED,
@@ -18,6 +23,14 @@ class StopParkingEventHandler(
 
     private val logger = LoggerFactory.getLogger(StopParkingEventHandler::class.java)
 
+    /**
+     * Handles the stop parking event.
+     * Skips processing if the parking is already not ACTIVE.
+     *
+     * @param event The parking stopped event.
+     * @throws IllegalArgumentException if the parking session is not found, or the end time is invalid.
+     * @throws IllegalStateException if the external API call fails.
+     */
     override fun invoke(event: ParkingEvent) {
         val existingParking =
             requireNotNull(simpleParkParkingService.findByInternalParkingId(event.parkingId)) { "Parking with ID ${event.parkingId} does not exist" }
