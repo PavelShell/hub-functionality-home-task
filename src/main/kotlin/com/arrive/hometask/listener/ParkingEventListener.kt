@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * TODO: Implement Kafka listener for parking events
@@ -30,6 +31,7 @@ class ParkingEventListener(
 
     // Transactions?
     @KafkaListener(topics = ["parking.events"], errorHandler = "listenerErrorHandler")
+    @Transactional
     fun processMessage(event: ParkingEvent, ack: Acknowledgment) {
         logger.info("Received event: $event")
         when (event.eventType) {

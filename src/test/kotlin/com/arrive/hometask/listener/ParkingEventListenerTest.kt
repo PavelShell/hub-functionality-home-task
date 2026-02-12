@@ -1,9 +1,21 @@
 package com.arrive.hometask.listener
 
+import com.arrive.hometask.client.SimpleParkClient
+import com.arrive.hometask.client.SimpleParkClientResponse
+import com.arrive.hometask.client.SimpleParkParkingStatus
 import com.arrive.hometask.config.BaseTestConfig
+import com.arrive.hometask.db.SimpleParkParkingJpaRepository
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.core.io.ClassPathResource
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.test.context.EmbeddedKafka
@@ -33,25 +45,48 @@ import java.util.concurrent.TimeUnit
 )
 class ParkingEventListenerTest : BaseTestConfig() {
 
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
+
     @Autowired(required = false)
     private lateinit var kafkaTemplate: KafkaTemplate<String?, String?>
 
+    @Autowired(required = false)
+    private lateinit var parkParkingJpaRepository: SimpleParkParkingJpaRepository
+
+    @MockBean
+    private lateinit var parkClient: SimpleParkClient
+
+    @BeforeEach
+    @AfterEach
+    fun `clean up database`() {
+        parkParkingJpaRepository.deleteAllInBatch()
+    }
+
     @Test
-    fun `should receive parking started event from embedded Kafka`() {
-        // Given: A parking started event
-        val startMessage = copyToString(ClassPathResource("example-parking-started-event.json").inputStream, Charset.defaultCharset())
+    fun `should successfully send message to the topic`() {
+        val startMessage =
+            copyToString(ClassPathResource("example-parking-started-event.json").inputStream, Charset.defaultCharset())
+        val event = objectMapper.readValue(startMessage, ParkingEvent::class.java)
+        val clientResponse = SimpleParkClientResponse("IDDQD", SimpleParkParkingStatus.ACTIVE)
 
-
-        // When: Event is published to Kafka topic
+        `when`(
+            parkClient.startParking(
+                event.licensePlate!!,
+                event.areaCode!!,
+                event.startTime!!,
+                event.endTime
+            )
+        ).thenReturn(clientResponse)
         kafkaTemplate.send("parking.events", "testKey", startMessage)
             .get(10, TimeUnit.SECONDS)
 
-        // Then: The listener should process the event
-        // TODO: Add verification once listener is implemented
-        // For now, this test verifies that:
-        // 1. Embedded Kafka broker starts successfully
-        // 2. PostgreSQL container starts successfully
-        // 3. Messages can be sent to the topic
-        // 4. No exceptions are thrown
+        verify(parkClient, Mockito.timeout(10000)).startParking(
+            event.licensePlate!!,
+            event.areaCode!!,
+            event.startTime!!,
+            event.endTime
+        )
+        assertTrue(parkParkingJpaRepository.existsByInternalParkingId(event.parkingId))
     }
 }
