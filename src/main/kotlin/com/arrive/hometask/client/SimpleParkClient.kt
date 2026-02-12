@@ -9,6 +9,7 @@ import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.postForObject
 import java.time.Instant
 
 /**
@@ -79,7 +80,7 @@ class SimpleParkClient(
     private fun postHandlingException(url: String, request: Any?): SimpleParkClientResponse {
         try {
             return requireNotNull(
-                restTemplate.postForObject(url, request, SimpleParkClientResponse::class.java)
+                restTemplate.postForObject<SimpleParkClientResponse>(url, request)
             )
         } catch (ex: HttpClientErrorException) {
             // 4xx - Bad Request, Unauthorized, Not Found

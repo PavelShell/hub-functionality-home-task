@@ -24,7 +24,7 @@ class StopParkingEventHandler(
     private val logger = LoggerFactory.getLogger(StopParkingEventHandler::class.java)
 
     /**
-     * Handles the stop parking event.
+     * Handles the [ParkingEventType.PARKING_STOPPED] parking event.
      * Skips processing if the parking is already not ACTIVE.
      *
      * @param event The parking stopped event.

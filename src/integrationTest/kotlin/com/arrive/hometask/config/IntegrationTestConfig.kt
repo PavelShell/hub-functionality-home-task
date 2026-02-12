@@ -62,9 +62,7 @@ abstract class IntegrationTestConfig {
 class KafkaProducerTestConfig {
 
     @Bean
-    fun testKafkaProducerFactory(
-        registry: DynamicPropertyRegistry? = null
-    ): ProducerFactory<String, Any> {
+    fun testKafkaProducerFactory(): ProducerFactory<String, Any> {
         val configProps = mutableMapOf<String, Any>(
             org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG
                 to (IntegrationTestConfig.kafkaContainer.bootstrapServers),

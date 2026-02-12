@@ -72,7 +72,7 @@ class KafkaConsumerConfig {
         val logger = LoggerFactory.getLogger(ParkingEventListener::class.java)
         return KafkaListenerErrorHandler { message, exception ->
             // todo implement more useful error handling
-            logger.error("Error processing message: ${message}", exception)
+            logger.error("Error processing message: $message", exception)
             return@KafkaListenerErrorHandler "error handled"
         }
     }

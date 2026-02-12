@@ -34,7 +34,6 @@ class ParkingEventListenerTest : DbAwareTestConfig() {
     @Autowired
     private lateinit var kafkaTemplate: KafkaTemplate<String?, String?>
 
-
     @MockkBean
     private lateinit var handlersFactory: ParkingEventHandlerFactory
 

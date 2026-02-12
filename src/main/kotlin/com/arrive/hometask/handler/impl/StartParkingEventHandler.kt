@@ -26,7 +26,7 @@ class StartParkingEventHandler(
     private val logger = LoggerFactory.getLogger(StartParkingEventHandler::class.java)
 
     /**
-     * Handles the start parking event.
+     * Handles the [ParkingEventType.PARKING_STARTED] parking event.
      * Skips processing if a parking with the same internal ID already exists (idempotency).
      *
      * @param event The parking started event.

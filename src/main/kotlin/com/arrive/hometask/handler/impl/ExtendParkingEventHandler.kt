@@ -23,7 +23,7 @@ class ExtendParkingEventHandler(
     private val logger = LoggerFactory.getLogger(ExtendParkingEventHandler::class.java)
 
     /**
-     * Handles the extend parking event.
+     * Handles the [ParkingEventType.PARKING_EXTENDED] parking event.
      * Skips processing if the new end time matches the current end time (idempotency).
      *
      * @param event The parking extended event.

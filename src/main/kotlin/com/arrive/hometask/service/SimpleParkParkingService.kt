@@ -20,7 +20,7 @@ class SimpleParkParkingService(
      * @return The saved entity.
      */
     @Transactional
-    fun save(parking: SimpleParkParking) = parkParkingJpaRepository.save(parking)
+    fun save(parking: SimpleParkParking): SimpleParkParking = parkParkingJpaRepository.save(parking)
 
     /**
      * Finds a parking entity by its internal ID.
@@ -28,5 +28,5 @@ class SimpleParkParkingService(
      * @param id The internal parking ID.
      * @return The found [SimpleParkParking] or null if not found.
      */
-    fun findByInternalParkingId(id: String) = parkParkingJpaRepository.findOneByInternalParkingId(id)
+    fun findByInternalParkingId(id: String): SimpleParkParking? = parkParkingJpaRepository.findOneByInternalParkingId(id)
 }
