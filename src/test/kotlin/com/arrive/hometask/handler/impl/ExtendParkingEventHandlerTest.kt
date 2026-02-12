@@ -106,6 +106,23 @@ class ExtendParkingEventHandlerTest {
     }
 
     @Test
+    fun `should skip extension when new end time is same as current end time`() {
+        // given
+        val endTime = Instant.now().plusSeconds(3600)
+        val event = createEvent(endTime = endTime)
+        val existingParking = createParking(event.parkingId, endTime = endTime)
+
+        every { simpleParkParkingService.findByInternalParkingId(event.parkingId) } returns existingParking
+
+        // when
+        handler.invoke(event)
+
+        // then
+        verify(exactly = 0) { parkClient.extendParking(any(), any()) }
+        verify(exactly = 0) { simpleParkParkingService.save(any()) }
+    }
+
+    @Test
     fun `should throw exception when client returns non-active status`() {
         // given
         val event = createEvent()

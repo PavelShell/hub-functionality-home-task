@@ -232,9 +232,48 @@ class ParkingEventListenerIntegrationTest : IntegrationTestConfig() {
         sendEvent(event)
 
         // then
-        Thread.sleep(2000) // Wait to ensure it's NOT saved
-        val parking = repository.findOneByInternalParkingId(parkingId)
-        assertNull(parking)
+        await {
+            val parking = repository.findOneByInternalParkingId(parkingId)
+            assertNull(parking)
+        }
+    }
+
+    @Test
+    fun `should be idempotent when receiving duplicate parking started event`() {
+        // given
+        val parkingId = "idempotent-1"
+        val externalId = "ext-idempotent-1"
+        val event = ParkingEvent(
+            eventType = ParkingEventType.PARKING_STARTED,
+            parkingId = parkingId,
+            licensePlate = "ABC-123",
+            areaCode = "ZONE-A",
+            startTime = Instant.now().truncatedTo(ChronoUnit.SECONDS)
+        )
+
+        wireMock.stubFor(
+            post(urlEqualTo("/api/v1/parking/start"))
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("""{"parkingId": "$externalId", "status": "ACTIVE"}""")
+                )
+        )
+
+        // when
+        sendEvent(event)
+        await { assertNotNull(repository.findOneByInternalParkingId(parkingId)) }
+
+        sendEvent(event) // duplicate
+
+        // then
+        Thread.sleep(1000) // Wait to see if anything bad happens (like extra API calls or DB errors)
+
+        val count = repository.findAll().count { it.internalParkingId == parkingId }
+        assertEquals(1, count)
+
+        wireMock.verify(1, postRequestedFor(urlEqualTo("/api/v1/parking/start")))
     }
 
     private fun sendEvent(event: ParkingEvent) {

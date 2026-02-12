@@ -67,7 +67,7 @@ class KafkaConsumerConfig {
         return KafkaListenerErrorHandler { message, exception ->
             // todo implement more useful error handling
             logger.error("Error processing message: ${message}", exception)
-            return@KafkaListenerErrorHandler "some value"
+            return@KafkaListenerErrorHandler "error handled"
         }
     }
 

@@ -6,6 +6,7 @@ import com.arrive.hometask.handler.TypedParkingEventHandler
 import com.arrive.hometask.listener.model.ParkingEvent
 import com.arrive.hometask.listener.model.ParkingEventType
 import com.arrive.hometask.service.SimpleParkParkingService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
@@ -15,18 +16,24 @@ class ExtendParkingEventHandler(
     private val simpleParkParkingService: SimpleParkParkingService,
 ) : TypedParkingEventHandler {
 
+    private val logger = LoggerFactory.getLogger(ExtendParkingEventHandler::class.java)
+
     override fun invoke(event: ParkingEvent) {
         val existingParking =
             requireNotNull(simpleParkParkingService.findByInternalParkingId(event.parkingId)) { "Parking with ID ${event.parkingId} does not exist" }
+        val newEndTime = requireNotNull(event.endTime) { "endTime in $event cannot be null" }
+        if (newEndTime == existingParking.endTime) {
+            logger.warn("Parking with ID ${event.parkingId} already has the endTime $newEndTime. Skipping event.")
+            return
+        }
+        if (existingParking.endTime != null && newEndTime < existingParking.endTime) {
+            throw IllegalArgumentException("New end time for parking $existingParking must be after current end time. Provided: $newEndTime, current: ${existingParking.endTime}")
+        }
         if (existingParking.status != SimpleParkParkingStatus.ACTIVE) {
             throw IllegalStateException("Parking with ID ${event.parkingId} is not active. Actual status: ${existingParking.status}")
         }
         val externalParkingId =
             requireNotNull(existingParking.externalParkingId) { "externalParkingId in $existingParking cannot be null" }
-        val newEndTime = requireNotNull(event.endTime) { "endTime in $event cannot be null" }
-        if (existingParking.endTime != null && newEndTime <= existingParking.endTime) {
-            throw IllegalArgumentException("New end time for parking $existingParking must be after current end time. Provided: $newEndTime, current: ${existingParking.endTime}")
-        }
 
         val (_, status) = parkClient.extendParking(externalParkingId, newEndTime)
 
